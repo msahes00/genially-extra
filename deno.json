@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "build": "deno run -A build.ts"
+  },
+  "imports": {
+    "esbuild": "npm:esbuild@^0.25.4"
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "deno.ns"
+    ]
+  }
+}
