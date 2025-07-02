@@ -1,18 +1,21 @@
-import { build } from 'npm:esbuild';
+import { build } from "esbuild";
+import { denoPlugins } from "@luca/esbuild-deno-loader";
 
-
-const SRC_DIR = './src';
-const OUT_DIR = './dist';
+const SRC_DIR = "./src/features";
+const OUT_DIR = "./dist";
 
 const targets = [
-    'table',
+    "login",
+    "table",
+    "dnd",
+    "spot",
 ];
 
 // Prepare the input and output paths
-const paths = targets.map(name => {
+const paths = targets.map(target => {
     return {
-        src: `${SRC_DIR}/${name}.ts`,
-        out: `${OUT_DIR}/${name}.js`
+        src: `${SRC_DIR}/${target}.ts`,
+        out: `${OUT_DIR}/${target}.js`
     }
 });
 
@@ -24,8 +27,11 @@ await Promise.all(
             bundle: true,
             minify: true,
             outfile: path.out,
-            platform: 'browser',
-            format: 'iife',
+            platform: "browser",
+            format: "iife",
+            plugins: [
+                ...denoPlugins(),
+            ],
         });
     })
 );
