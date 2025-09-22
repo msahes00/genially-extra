@@ -86,3 +86,11 @@ export const send = async (
 export const login = (user: string): void => {
     localStorage.setItem(USER_KEY, user);
 };
+
+/**
+ * Gets the user ID in local storage.
+ * @param The current user ID or an empty string.
+ */
+export const getUser = (): string => {
+    return localStorage.getItem(USER_KEY) || "";
+};

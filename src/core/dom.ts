@@ -117,6 +117,10 @@ export const init = async () => {
             selector: Settings.html.spot,
             labelFn: (c: Container) => c.element.dataset.correct === "true" ? "Correcto" : "Incorrecto"
         },
+        {
+            selector: Settings.html.findy,
+            labelFn: (c: Container) => `${c.element.dataset.correct === "true" ? "Correcto" : "Incorrecto"} - Grupo: ${c.element.dataset.group}`
+        },
     ];
     
 

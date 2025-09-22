@@ -9,6 +9,7 @@ const targets = [
     "table",
     "dnd",
     "spot",
+    "findy",
 ];
 
 // Prepare the input and output paths

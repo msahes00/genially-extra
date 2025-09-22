@@ -30,7 +30,7 @@ async function main() {
     input.style.fontSize = "1rem";
     input.style.textAlign = "center";
 
-
+    input.value = telemetry.getUser();
     input.addEventListener("input", () => {
         telemetry.login(input.value);
     });
