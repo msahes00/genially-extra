@@ -4,7 +4,7 @@ import { Timer } from "./timer.ts";
  * Defines the options available for configuring a game.
  */
 export interface GameOptions {
-    initContext? (ctx: GameContext): void;
+    initContext? (ctx: GameContext): GameContext | Promise<GameContext>;
     isValidPick? (ctx: GameContext): boolean;
     isGameEnded? (ctx: GameContext): boolean;
 
@@ -50,7 +50,7 @@ export class Game {
 
      */
     private opts: Required<GameOptions> = {
-        initContext: () => {},
+        initContext: (ctx) => ctx,
         isValidPick: () => false,
         isGameEnded: () => false,
         handleRight: () => {},
@@ -74,19 +74,17 @@ export class Game {
      * @param event The event to check.
      */
     // NOTE: this is implemented as an arrow function to avoid the need for bind()
-    public check = (event: Event) => {
+    public check = async (event: Event) => {
 
         // Ignore if the game is over
         if (this.gameOver)
             return;
 
         // Prepare the context to pass to the options
-        const ctx: GameContext = {
+        const ctx = await this.opts.initContext({
             game: this,
             event,
-        };
-
-        this.opts.initContext(ctx);
+        });
 
         if (this.opts.isValidPick(ctx)) 
             this.opts.handleRight(ctx);

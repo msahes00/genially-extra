@@ -14,6 +14,9 @@ export const Settings = {
         table: "ge-table",
         spot : "ge-spot",
         findy: "ge-findy",
+        guess: "ge-guess",
+        area : "ge-area",
+        piece: "ge-piece",
         obj  : "ge-obj",
         box  : "ge-box",
     },
@@ -25,5 +28,6 @@ export const Settings = {
         spot : "spot",
         dnd  : "dnd",
         findy: "findy",
+        guess: "guess",
     },
 };

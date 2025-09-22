@@ -43,19 +43,6 @@ async function main() {
     // Find all the hitboxes
     const findys = await Container.searchAll(Settings.html.findy);
 
-    /*
-    // Assign each findy an unique id
-    findys.forEach((s, i) => s.element.dataset._index = `findy-${i}`);
-
-    // Group and count the correct ones (individual ones create their own group)
-    const correctGroups = new Set(
-        findys
-            .filter(s => s.element.dataset.correct === "true")
-            .map(s => s.element.dataset.group || s.element.dataset._index)
-    );
-    const hitmax = correctGroups.size;
-    */
-
     // Store the groups that have been fully marked
     let markedGroups = 0;
 
@@ -83,6 +70,8 @@ async function main() {
                 throw new Error("Invalid findy");
 
             ctx.findy = findy.element;
+
+            return ctx;
         },
 
         isValidPick: (ctx: FindyContext) => {

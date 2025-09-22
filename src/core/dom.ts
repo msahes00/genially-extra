@@ -87,6 +87,8 @@ export const init = async () => {
         { selector: Settings.html.next , label: "Siguiente"  },
         { selector: Settings.html.clock, label: "Reloj"      },
         { selector: Settings.html.score, label: "Puntuacion" },
+        { selector: Settings.html.login, label: "Login"      },
+        { selector: Settings.html.area,  label: "Area"       },
     ];
     
     // Declare some state dependent elements
@@ -119,7 +121,15 @@ export const init = async () => {
         },
         {
             selector: Settings.html.findy,
-            labelFn: (c: Container) => `${c.element.dataset.correct === "true" ? "Correcto" : "Incorrecto"} - Grupo: ${c.element.dataset.group}`
+            labelFn: (c: Container) => `${c.element.dataset.correct === "true" ? "Correcto" : "Incorrecto"} - Grupo: ${c.element.dataset.group || "##"}`
+        },
+        {
+            selector: Settings.html.guess,
+            labelFn: (c: Container) => `Respuesta: "${c.element.dataset.answer}"`
+        },
+        {
+            selector: Settings.html.piece,
+            labelFn: (c: Container) => `Valor: "${c.element.dataset.value}"`
         },
     ];
     

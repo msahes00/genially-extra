@@ -47,6 +47,8 @@ async function main() {
 
             ctx.box = box?.element;
             ctx.obj = obj.element;
+
+            return ctx;
         },
 
         handleRight: (ctx: DndContext) => {

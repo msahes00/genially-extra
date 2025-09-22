@@ -61,6 +61,8 @@ async function main() {
                 throw new Error("Invalid spot");
 
             ctx.spot = spot.element;
+            
+            return ctx;
         },
 
         isValidPick: (ctx: SpotContext) => {

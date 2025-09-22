@@ -59,6 +59,8 @@ async function main() {
                 throw new Error("Invalid table cell");
             
             ctx.cell = cell;
+
+            return ctx;
         },
         
         handleRight: (ctx: TableContext) => {
