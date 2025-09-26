@@ -1,5 +1,5 @@
 import { build } from "esbuild";
-import { denoPlugins } from "@luca/esbuild-deno-loader";
+import { denoPlugins } from "@oazmi/esbuild-plugin-deno";
 
 const SRC_DIR = "./src/features";
 const OUT_DIR = "./dist";
@@ -32,7 +32,12 @@ await Promise.all(
             platform: "browser",
             format: "iife",
             plugins: [
-                ...denoPlugins(),
+                // @ts-ignore: ignore weird type error
+                ...denoPlugins({
+                    initialPluginData: {
+                        runtimePackage: "./deno.json",
+                    }
+                }),
             ],
         });
     })

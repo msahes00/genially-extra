@@ -3,9 +3,9 @@
     "build": "deno run -A build.ts"
   },
   "imports": {
-    "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.1",
-    "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.50.2",
-    "esbuild": "npm:esbuild@^0.25.4"
+    "@oazmi/esbuild-plugin-deno": "jsr:@oazmi/esbuild-plugin-deno@^0.4.4",
+    "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.58.0",
+    "esbuild": "npm:esbuild@^0.25.10"
   },
   "compilerOptions": {
     "lib": [
