@@ -1,8 +1,10 @@
 import { build } from "esbuild";
 import { denoPlugins } from "@oazmi/esbuild-plugin-deno";
+import { copy } from "@std/fs";
 
 const SRC_DIR = "./src/features";
 const OUT_DIR = "./dist";
+const PUBLIC_DIR = "./public";
 
 const targets = [
     "login",
@@ -20,6 +22,9 @@ const paths = targets.map(target => {
         out: `${OUT_DIR}/${target}.js`
     }
 });
+
+// Clean up any previous build
+await Deno.remove(OUT_DIR, { recursive: true });
 
 // Build the files
 await Promise.all(
@@ -42,3 +47,8 @@ await Promise.all(
         });
     })
 );
+
+// Copy public files
+await copy(PUBLIC_DIR, OUT_DIR, { overwrite: true });
+
+console.log("Build finished successfully!");
