@@ -1,5 +1,4 @@
 import * as finder from "./finder.ts";
-import * as genially from "./genially.ts";
 
 /**
  * The magic string used to identify the container element.
@@ -73,9 +72,6 @@ export class Container {
      * @returns    The container instance for chaining.
      */
     public highlight(text: string | ((c: Container) => string)) {
-
-        // Do not highlight the container when viewing the Genially
-        if (genially.isViewMode()) return;
 
         this.element.style.border  = "2px solid red";
         this.element.style.padding = "2px";

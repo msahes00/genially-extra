@@ -16,11 +16,9 @@ export const loadOnce = (key: string) => {
         globalThis.window.__extraGenially = {};
     }
     
-    if (globalThis.window.__extraGenially[key]) {
-        throw new Error(
-            `Extra Genially script with key '${key}' is already loaded`,
-        );
-    }
+    if (globalThis.window.__extraGenially[key]) 
+        throw new Error(`Extra Genially script with key '${key}' is already loaded`);
+
     globalThis.window.__extraGenially[key] = true;
 };
 

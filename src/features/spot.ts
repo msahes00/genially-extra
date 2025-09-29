@@ -1,8 +1,8 @@
-import * as dom from "../core/dom.ts";
-import * as genially from "../core/genially.ts";
+import * as dom from "../utils/dom.ts";
+import * as genially from "../utils/genially.ts";
 import { Container } from "../core/container.ts";
 import { Game, GameContext } from "../core/game.ts";
-import { Settings } from "../core/settings.ts";
+import { Settings } from "./settings.ts";
 
 const RIGHT_SVG = `
   <svg width="48" height="48" viewBox="0 0 24 24"

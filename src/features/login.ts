@@ -1,8 +1,8 @@
-import * as dom from "../core/dom.ts";
-import * as genially from "../core/genially.ts";
-import * as telemetry from "../core/telemetry.ts";
-import { Settings } from "../core/settings.ts";
+import * as dom from "../utils/dom.ts";
+import * as genially from "../utils/genially.ts";
+import * as telemetry from "../utils/telemetry.ts";
 import { Container } from "../core/container.ts";
+import { Settings } from "./settings.ts";
 
 genially.loadOnce("login");
 dom.init();
