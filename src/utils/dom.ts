@@ -79,8 +79,8 @@ export const updateScore = async (game: Game) => {
 export const init = async () => {
     const timeout = 1000;
 
-    // Skip highlighting if we are not viewing the genially
-    if (!genially.isViewMode()) return;
+    // Skip highlighting if we are viewing the genially
+    if (genially.isViewMode()) return;
 
     // Keep searching indefinitely for elements and highlight them
     while (true) {

@@ -8,12 +8,12 @@ export const Settings = {
      * The css clases used for finding the elements.
      */
     html: {
-        main : "ge-main",
-        next : "ge-next",
-        login: "ge-login",
-        clock: "ge-clock",
-        score: "ge-score",
-        table: "ge-table",
+        main : "ge-main",  // The script element
+        login: "ge-login", // The login text area
+        next : "ge-next",  // The next button trigger
+        clock: "ge-clock", // The clock widget
+        score: "ge-score", // The score widget
+        table: "ge-table", // The table prompt identifier
         spot : "ge-spot",
         findy: "ge-findy",
         guess: "ge-guess",
@@ -21,7 +21,7 @@ export const Settings = {
         piece: "ge-piece",
         obj  : "ge-obj",
         box  : "ge-box",
-    },
+    } as const,
     /**
      * The exercise key to use with each exercise kind for the telemetry data.
      */
@@ -31,14 +31,21 @@ export const Settings = {
         dnd  : "dnd",
         findy: "findy",
         guess: "guess",
-    },
+    } as const,
+    /**
+     * The available categories for the images
+     */
+    categories: {
+        black: "black",
+        color: "color",
+        numBlack: "num-black",
+        numColor: "num-color",
+        numWrong: "num-wrong",
+    } as const,
     /**
      * The highlights for each element
      */
-    // Note: this first empty highlight is here for types only
-    highlights: [
-        { selector: "", label: (_c: Container) => "" }
-    ]
+    highlights: [] as Array<{ selector: string; label: (c: Container) => string }>
 };
 
 // Define all the highlights here
@@ -48,13 +55,10 @@ Settings.highlights = [
     { selector: Settings.html.score, label: () => "Puntuacion" },
     { selector: Settings.html.login, label: () => "Login"      },
     { selector: Settings.html.area,  label: () => "Area"       },
+    { selector: Settings.html.table, label: () => "Enunciado"  },
     {
         selector: Settings.html.main,
         label: (c: Container) => `Script "${name(c)}"`,
-    },
-    {
-        selector: Settings.html.table,
-        label: (c: Container) => `Respuesta: "${c.element.dataset.answer}"`
     },
     {
         selector: Settings.html.obj,

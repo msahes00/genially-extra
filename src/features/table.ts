@@ -1,4 +1,5 @@
 import * as dom from "../utils/dom.ts"
+import * as random from "../utils/random.ts";
 import * as genially from "../utils/genially.ts";
 
 import * as finder from "../core/finder.ts";
@@ -31,14 +32,8 @@ async function main() {
     if (!table)
         throw new Error("Table not found");
 
-    // Find the script and parse the answer from it
-    const answer = await getAnswer(table);
-
-    // Compute the correct answers
-    const hitMax = Array.from(table.querySelectorAll("td"))
-        .filter((c) => c.innerText === answer)
-        .length;
-
+    const answer = await setupAnswer();
+    const hitMax = setupTable(table, answer);    
 
     // Build the actual game
     const game = new Game({
@@ -48,7 +43,7 @@ async function main() {
         isGameEnded: (ctx) => ctx.game.hitCount === hitMax,
         handleEnded: dom.handleEnded(Settings.exercises.table, main),
         
-        isValidPick: (ctx: TableContext) => ctx.cell.innerText === answer,
+        isValidPick: (ctx: TableContext) => ctx.cell.innerText === answer.txt,
         
         initContext: (ctx: TableContext) => {
             
@@ -97,11 +92,53 @@ async function main() {
     }
 }
 
-async function getAnswer(table: HTMLTableElement) {
+async function setupAnswer() {
 
-    const root = genially.getRoot(table) as HTMLElement;
+    // Get one answer
+    const answer = random.sampleCategory(Settings.categories.color)[0];
 
-    const container = await Container.search(Settings.html.table, { root });
+    // Get the promt parent group
+    const prompt = await Container.search(Settings.html.table);
+    if (!prompt)
+        throw new Error("Prompt not found");
 
-    return container!.element.dataset.answer;
+    const group = genially.getGroup(prompt.element);
+    if (!group)
+        throw new Error("Group not found");
+
+    // Find and replace the text and image
+    const span = group.querySelector("span")!;
+    const img  = group.querySelector("img")!;
+
+    span.textContent = `${answer.num} = ${answer.txt}`;
+    img.src = answer.src;
+
+    // Return the answer for further use
+    return answer;
+}
+
+function setupTable(table: HTMLTableElement, answer: random.Item) {
+
+    // Count the amount of elements in the table
+    const rows = table.rows.length;
+    const cols = table.rows[0].cells.length;
+    const total = rows * cols;
+    
+    // Generate a random amount of hits
+    const hitCount = random.biasedInt(0, total, 0, 10);
+
+    const data = random.sampleCategory(Settings.categories.color, {
+        count: total,
+        include: new Array(hitCount).fill(answer),
+    });
+
+    // Update the table contents
+    data.forEach((element, i) => {
+        const row = Math.floor(i / cols);
+        const cell = i % cols;
+
+        table.rows[row].cells[cell].innerText = element.txt;
+    });
+
+    return hitCount;
 }

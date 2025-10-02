@@ -73,6 +73,7 @@ export class Container {
      */
     public highlight(text: string | ((c: Container) => string)) {
 
+        this.element.style.color   = "red";
         this.element.style.border  = "2px solid red";
         this.element.style.padding = "2px";
         this.element.style.height  = "100%";

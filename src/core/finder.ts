@@ -8,15 +8,16 @@ interface Options {
 
 /**
  * Waits for elements matching a CSS selector to appear in the DOM.
- * If matching elements already exist, invokes the callback synchronously.
+ * If matching elements already exist, invokes the callback inmediately.
  * Otherwise, observes DOM mutations until elements appear or the timeout is reached.
- * @param query        The CSS selector to match elements.
- * @param callback     The function to invoke with the found elements.
- * @param opts.timeout Maximum time to wait in milliseconds:  
- *                         < 0: invoke callback immediately and skip observing;  
- *                         = 0: wait indefinitely until elements appear;  
- *                         > 0: wait up to this time before giving up.  
- * @param opts.root    The root element to query and observe. Defaults to `document.documentElement`.
+ * @param query    The CSS selector to match elements.
+ * @param callback The function to invoke with the found elements.
+ * @param opts     Options for waiting:
+ * - `timeout`: Maximum time to wait in milliseconds:
+ *     - < 0: invoke callback immediately and skip observing
+ *     - = 0: wait indefinitely until elements appear
+ *     - > 0: wait up to this time before giving up
+ * - `root`: The root element to query and observe (default: `document.documentElement`)
  */
 export const waitFor = (
     query: string,

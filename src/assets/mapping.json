@@ -1,0 +1,22 @@
+{
+  "black": [
+    { "src": "https://msahes00.github.io/genially-extra/black/1.jpg", "num": "1", "txt": "t" },
+    { "src": "https://msahes00.github.io/genially-extra/black/2.jpg", "num": "2", "txt": "n" }
+  ],
+  "color": [
+    { "src": "https://msahes00.github.io/genially-extra/color/1.jpg", "num": "1", "txt": "t" },
+    { "src": "https://msahes00.github.io/genially-extra/color/2.jpg", "num": "2", "txt": "n" }
+  ],
+  "num-black": [
+    { "src": "https://msahes00.github.io/genially-extra/num-black/1.jpg", "num": "1", "txt": "t" },
+    { "src": "https://msahes00.github.io/genially-extra/num-black/2.jpg", "num": "2", "txt": "n" }
+  ],
+  "num-color": [
+    { "src": "https://msahes00.github.io/genially-extra/num-color/1.jpg", "num": "1", "txt": "t" },
+    { "src": "https://msahes00.github.io/genially-extra/num-color/2.jpg", "num": "2", "txt": "n" }
+  ],
+  "num-wrong": [
+    { "src": "https://msahes00.github.io/genially-extra/num-wrong/1.jpg", "num": "", "txt": "" },
+    { "src": "https://msahes00.github.io/genially-extra/num-wrong/2.jpg", "num": "", "txt": "" }
+  ]
+}
