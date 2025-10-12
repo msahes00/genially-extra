@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "jsr:@oazmi/esbuild-plugin-deno@~0.4.4": "0.4.4",
+    "jsr:@oazmi/esbuild-types@0.25.0": "0.25.0",
     "jsr:@oazmi/kitchensink@0.9.14": "0.9.14",
     "jsr:@std/fs@^1.0.19": "1.0.19",
     "jsr:@std/internal@^1.0.9": "1.0.10",
@@ -19,8 +20,12 @@
     "@oazmi/esbuild-plugin-deno@0.4.4": {
       "integrity": "08b03f9cac9c9a606a27bd1c4896c1cf08a5b8a43400b78910dcc32a5d20217f",
       "dependencies": [
+        "jsr:@oazmi/esbuild-types",
         "jsr:@oazmi/kitchensink"
       ]
+    },
+    "@oazmi/esbuild-types@0.25.0": {
+      "integrity": "f0481efb80d1e634ec6cad627aea3d1c4cbe085907d2a6ef64182c47af4bc39a"
     },
     "@oazmi/kitchensink@0.9.14": {
       "integrity": "3510645cd38bfc03f391e64c2cafb075fbc33f334f8891f0498d95444878a11d"

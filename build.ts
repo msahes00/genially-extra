@@ -23,6 +23,22 @@ const paths = targets.map(target => {
     }
 });
 
+// Type check all source files
+console.log("Checking types...");
+const checkCommand = new Deno.Command("deno", {
+  args: ["check", SRC_DIR],
+  stdout: "inherit",
+  stderr: "inherit",
+});
+
+const checkProcess = checkCommand.spawn();
+const checkStatus = await checkProcess.status;
+
+if (!checkStatus.success) {
+  console.error("Type checking failed. Aborting build.");
+  Deno.exit(1);
+}
+
 // Clean up any previous build
 await Deno.remove(OUT_DIR, { recursive: true });
 
