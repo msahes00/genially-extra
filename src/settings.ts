@@ -1,4 +1,4 @@
-import { Container } from "../core/container.ts";
+import { Container } from "./core/container.ts";
 
 /**
  * Some general settings common to most components
@@ -14,13 +14,15 @@ export const Settings = {
         clock: "ge-clock", // The clock widget
         score: "ge-score", // The score widget
         table: "ge-table", // The table prompt identifier
-        spot : "ge-spot",
-        findy: "ge-findy",
-        guess: "ge-guess",
-        area : "ge-area",
-        piece: "ge-piece",
-        obj  : "ge-obj",
-        box  : "ge-box",
+        spot : "ge-spot",  // The spot identifier
+        obj  : "ge-obj",   // The dnd object identifier
+        box  : "ge-box",   // The dnd hitbox identifier
+        findy: "ge-findy", // The findy spot identifier
+        date : "ge-date",  // The findy date identifier
+        quote: "ge-quote", // The findy quote identifier
+        guess: "ge-guess", // The guess prompt identifier
+        area : "ge-area",  // The guess area identifier
+        piece: "ge-piece", // The guess piece identifier
     } as const,
     /**
      * The exercise key to use with each exercise kind for the telemetry data.
@@ -36,6 +38,7 @@ export const Settings = {
      * The available categories for the images
      */
     categories: {
+        quote: "quote",
         black: "black",
         color: "color",
         numBlack: "num-black",
@@ -56,40 +59,22 @@ Settings.highlights = [
     { selector: Settings.html.login, label: () => "Login"      },
     { selector: Settings.html.area,  label: () => "Area"       },
     { selector: Settings.html.table, label: () => "Enunciado"  },
+    { selector: Settings.html.obj,   label: () => "Objeto"     },
+    { selector: Settings.html.box,   label: () => "Hitbox"     },
+    { selector: Settings.html.spot,  label: () => "Spot"       },
+    { selector: Settings.html.findy, label: () => "Findy"      },
+    { selector: Settings.html.date,  label: () => "Fecha"      },
+    { selector: Settings.html.quote, label: () => "Pregunta"   },
+    { selector: Settings.html.guess, label: () => "Imagenes"   },
     {
         selector: Settings.html.main,
         label: (c: Container) => `Script "${name(c)}"`,
-    },
-    {
-        selector: Settings.html.obj,
-        label: (c: Container) => `Objeto: "${c.element.dataset.index}"`
-    },
-    {
-        selector: Settings.html.box,
-        label: (c: Container) => `Hitbox: "${c.element.dataset.index}"`
-    },
-    {
-        selector: Settings.html.spot,
-        label: (c: Container) => correct(c.element.dataset.correct),
-    },
-    {
-        selector: Settings.html.findy,
-        label: (c: Container) => `${correct(c.element.dataset.correct)} - Grupo: ${c.element.dataset.group || "##"}`
-    },
-    {
-        selector: Settings.html.guess,
-        label: (c: Container) => `Respuesta: "${c.element.dataset.answer}"`
     },
     {
         selector: Settings.html.piece,
         label: (c: Container) => `Valor: "${c.element.dataset.value}"`
     },
 ];
-
-/**
- * A small helper to get a label based on the "correct" dataset property.
- */
-const correct = (data: string | undefined) => data? "Correcto" : "Incorrecto";
 
 /**
  * A small helper to get the script name and store it in the dataset.

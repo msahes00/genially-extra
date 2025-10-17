@@ -1,8 +1,8 @@
 import { build } from "esbuild";
 import { denoPlugins } from "@oazmi/esbuild-plugin-deno";
-import { copy } from "@std/fs";
+import { copy, exists } from "@std/fs";
 
-const SRC_DIR = "./src/features";
+const SRC_DIR = "./src/entrypoints";
 const OUT_DIR = "./dist";
 const PUBLIC_DIR = "./public";
 
@@ -26,21 +26,24 @@ const paths = targets.map(target => {
 // Type check all source files
 console.log("Checking types...");
 const checkCommand = new Deno.Command("deno", {
-  args: ["check", SRC_DIR],
-  stdout: "inherit",
-  stderr: "inherit",
+    args: ["check", SRC_DIR],
+    stdout: "inherit",
+    stderr: "inherit",
 });
 
 const checkProcess = checkCommand.spawn();
 const checkStatus = await checkProcess.status;
 
 if (!checkStatus.success) {
-  console.error("Type checking failed. Aborting build.");
-  Deno.exit(1);
+    console.error("Type checking failed. Aborting build.");
+    Deno.exit(1);
 }
 
-// Clean up any previous build
-await Deno.remove(OUT_DIR, { recursive: true });
+// Clean up any previous build if possible
+if (await exists(OUT_DIR)) {
+    console.log("Cleaning up previous build...");
+    await Deno.remove(OUT_DIR, { recursive: true });
+}
 
 // Build the files
 await Promise.all(

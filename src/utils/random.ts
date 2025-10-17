@@ -13,7 +13,7 @@ export type Item = GameData[Category][number];
  * @param inplace If true, the shuffle is done in place, otherwise a new array is returned.
  * @returns The shuffled array.
  */
-const shuffle = <T>(array: T[], inplace = false) => {
+export const shuffle = <T>(array: T[], inplace = false) => {
 
     const data = inplace ? array : [...array];
 
@@ -32,18 +32,24 @@ const shuffle = <T>(array: T[], inplace = false) => {
  * - `count`: The number of items to sample (default: 1).
  * - `include`: An array of items to include in the sample.
  * - `lockIncluded`: If true, included items are not sampled again (default: true).
+ * - `minIndex`: The minimum index to sample from (default: 0).
+ * - `maxIndex`: The maximum index to sample from (default: Infinity).
  * @returns An array of sampled items
  */
 export const sampleCategory = (category: Category, opts: {
     count?: number,
     include?: Item[],
     lockIncluded?: boolean,
+    minIndex?: number,
+    maxIndex?: number,
 } = {}) => {
 
     const {
         count = 1,
         include = [],
         lockIncluded = true,
+        minIndex = 0,
+        maxIndex = Infinity,
     } = opts;
 
     const items = mapping[category];
@@ -53,7 +59,11 @@ export const sampleCategory = (category: Category, opts: {
     // Filter out items that do not match the requested category
     const included = include.filter(item => items.includes(item));
 
-    let pool = shuffle(items);
+    // If specified, use a certain subrange from the total items
+    const min = Math.max(minIndex, 0);
+    const max = Math.min(maxIndex, items.length);
+
+    let pool = shuffle(items.slice(min, max));
 
     // Prevent adding an extra copy of an included element
     if (lockIncluded)

@@ -13,7 +13,7 @@ export interface GameOptions {
     handleEnded? (ctx: GameContext): void;
 
     updateScore? (g: Game): void;
-    updateClock? (timer: Timer): void;
+    updateClock? (t: Timer): void;
 };
 
 /**
@@ -33,7 +33,7 @@ export class Game {
     /**
      * Indicates if the game is over.
      */
-    public gameOver  = true;
+    public gameOver = true;
 
     /**
      * The number of incorrect picks made.
@@ -43,11 +43,15 @@ export class Game {
     /**
      * The number of correct picks made.
      */
-    public hitCount  = 0;
+    public hitCount = 0;
+
+    /**
+     * The store for general game data.
+     */
+    public data: Record<string, unknown>;
 
     /**
      * The options for the game.
-
      */
     private opts: Required<GameOptions> = {
         initContext: (ctx) => ctx,
@@ -62,10 +66,15 @@ export class Game {
 
     /**
      * Creates a new instance of the Game class.
-     * @param options Optional configuration for the game.
+     * @param options     Optional configuration for the game.
+     * @param initialData The initial data for the game.
      */
-    constructor(options: GameOptions = {}) {
+    constructor(options: GameOptions = {}, initialData: Record<string, unknown> = {}) {
+        
+        // Overrwrite the default no-op ones with the ones passed
         Object.assign(this.opts, options);
+        this.data = initialData;
+
         this.timer.setOnTick(this.opts.updateClock.bind(this));
     }
     
@@ -77,8 +86,7 @@ export class Game {
     public check = async (event: Event) => {
 
         // Ignore if the game is over
-        if (this.gameOver)
-            return;
+        if (this.gameOver) return;
 
         // Prepare the context to pass to the options
         const ctx = await this.opts.initContext({
@@ -94,9 +102,7 @@ export class Game {
 
         if (this.opts.isGameEnded(ctx)) {
             
-            this.gameOver = true;
-            this.timer.stop();
-
+            this.stop();
             this.opts.handleEnded(ctx);
         }
 
@@ -116,6 +122,14 @@ export class Game {
 
         // Initial UI update
         this.opts.updateScore(this);
+    }
+
+    /**
+     * Stops the current game.
+     */
+    public stop() {
+        this.gameOver = true;
+        this.timer.stop();
     }
 
     /**

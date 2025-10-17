@@ -1,18 +1,15 @@
 import * as dom from "../utils/dom.ts";
-import * as genially from "../utils/genially.ts";
 import * as telemetry from "../utils/telemetry.ts";
 import { Container } from "../core/container.ts";
-import { Settings } from "./settings.ts";
+import { Settings } from "../settings.ts";
 
-genially.loadOnce("login");
 dom.init();
 main();
-
 
 async function main() {
 
     const container = await Container.search(Settings.html.login);
-    if (!container) throw new Error("Login container not found");;
+    if (!container) throw new Error("Login container not found");
 
     // Prepare the <input type="text">
     const input = document.createElement("input");
@@ -30,18 +27,11 @@ async function main() {
     input.style.fontSize = "1rem";
     input.style.textAlign = "center";
 
+    // Link the value to the telemetry user
     input.value = telemetry.getUser();
     input.addEventListener("input", () => {
         telemetry.login(input.value);
     });
 
     container.element.replaceChildren(input);
-
-    // Wait until it it is not present to search for the login again
-    const timeout = 100;
-    while (await Container.search(Settings.html.login, { timeout })) {
-        await new Promise(resolve => setTimeout(resolve, timeout));
-    }
-
-    main();
 }
