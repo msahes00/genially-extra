@@ -1,4 +1,4 @@
-# Deploy bundled JS and README.md to gh-pages branch
+# Deploy bundled JS + images and README.md to gh-pages branch
 name: Deploy to gh-pages
 
 on:
@@ -20,17 +20,14 @@ jobs:
       - name: Build JS files
         run: deno task build
 
-      - name: Prepare deployment folder
-        run: |
-          mkdir deploy
-          cp README.md deploy/
-          cp dist/*.js deploy/
+      - name: Copy the readme to deployment
+        run: cp README.md dist/
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./deploy
+          publish_dir: ./dist
           publish_branch: gh-pages
           force_orphan: true
           enable_jekyll: true
