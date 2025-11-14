@@ -6,7 +6,6 @@ import { Container } from "../core/container.ts";
 import { Game } from "../core/game.ts";
 import { Settings } from "../settings.ts";
 import { game } from "../games/guess.ts";
-import { ENDED_KEY } from "../games/common.ts";
 
 dom.init();
 main();
@@ -27,7 +26,7 @@ async function main() {
         verify,
         holder,
         answer,
-        [ENDED_KEY]: Settings.exercises.guess,
+        telemetry: Settings.exercises.guess,
     };
 
     // Wire the pieces to be able be added and removed from area

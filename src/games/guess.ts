@@ -1,49 +1,23 @@
-import { Game, GameContext } from "../core/game.ts";
+import { Game, GameOptions } from "../core/game.ts";
 import { Container } from "../core/container.ts";
 import { Settings } from "../settings.ts";
-import * as common from "./common.ts";
+import { ContextWith, GameAnswer, GameWith } from "./types.ts";
 import * as table from "./table.ts";
-
-import { z } from "zod";
-
-/**
- * A zod schema used for validation.
- */
-const schema = z.object({
-    verify: z.instanceof(HTMLButtonElement),
-    holder: z.instanceof(HTMLDivElement),
-    answer: z.string(),
-});
+import * as spot from "./spot.ts";
 
 /**
- * A type derived from the schema for the game and its data.
+ * A type for the guess game data.
  */
-type GuessGame = Game & {
-    data: z.infer<typeof schema>;
-};
+export type GuessGame = GameAnswer & GameWith<{
+    verify: HTMLButtonElement;
+    holder: HTMLDivElement;
+}>;
 
 /**
- * Extended context with the current content data.
+ * A combined type for the guess context.
  */
-export interface GuessContext extends GameContext {
-    data: string;
-    elem: HTMLElement;
+export type GuessContext = table.DataContext & table.ElemContext & ContextWith<GuessGame>;
 
-    // Patch the data type
-    game: GuessGame;
-}
-
-
-/**
- * Checks if the data from the selected elements matches the answer.
- */
-export const isValidPick = (ctx: GuessContext) => ctx.data === ctx.game.data.answer;
-
-/**
- * An alias for isValidPick since the game ends when a valid pick is made.
- * @see {@link isValidPick}
- */
-export const isGameEnded = isValidPick;
 
 /**
  * Validates game data and combines the values from all the pieces.
@@ -51,38 +25,62 @@ export const isGameEnded = isValidPick;
 export const initContext = async (ctx: GuessContext) => {
 
     // Extract and validate the game data
-    const {
-        verify,
-        holder,
-    } = schema.parse(ctx.game.data);
+    const { data } = ctx.game as GuessGame;
 
     // Prepare the data atribute
     ctx.data = "";
 
-    // Concatenate all the values from the pieces
-    for (const child of Array.from(holder.children)) {
-        const root = child as HTMLElement;
+    // Concatenate and verify all the values from the pieces
+    let index = 0;
+    for (const child of Array.from(data.holder.children)) {
 
-        const marker = await Container.search(Settings.html.piece, { root });
-        if (!marker)
-            throw new Error("Marker not found");
+        const element = await getPieceElement(child as HTMLElement);
+        const value = element.dataset.value;
 
-        ctx.data += marker.element.dataset.value;
+        // Verify the current value and mark it if wrong
+        if (value !== ctx.game.data.answer[index]) {
+            spot.handleWrong({
+                ...ctx,
+                spot: element,
+            });
+        }
+
+        // Increase the index and append the value
+        index++;
+        ctx.data += value;
     }
 
     // Set the verify buttton as the table cell to animate
-    ctx.elem = verify;
+    ctx.elem = data.verify;
     return ctx;
 };
 
 /**
+ * The game options for the guess game.
+ */
+export const options = {
+    // Reuse the table options
+    ...table.options,
+    // Override the initContext
+    initContext,
+    // And rewire the game validation and gameover conditions for one cell
+    isGameEnded: table.isValidPick,
+    isValidPick: table.isValidPick,
+} as GameOptions;
+
+
+/**
  * A prebuilt guess game.
  */
-export const game = new Game({
-    ...common.combined,
-    initContext,
-    isGameEnded,
-    isValidPick,
-    handleRight: table.handleRight,
-    handleWrong: table.handleWrong,
-}) as GuessGame;
+export const game = new Game(options) as GuessGame;
+
+
+const getPieceElement = async (root: HTMLElement) => {
+
+    // Find the piece marker
+    const marker = await Container.search(Settings.html.piece, { root });
+    if (!marker)
+        throw new Error("Marker not found");
+
+    return marker.element;
+};

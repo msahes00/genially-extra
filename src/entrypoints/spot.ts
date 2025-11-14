@@ -4,7 +4,6 @@ import * as genially from "../utils/genially.ts";
 import { Container } from "../core/container.ts";
 import { Settings } from "../settings.ts";
 import { game } from "../games/spot.ts";
-import { ENDED_KEY } from "../games/common.ts";
 
 dom.init();
 main();
@@ -30,7 +29,7 @@ async function main() {
         hitMax,
         spots,
         marked: 0,
-        [ENDED_KEY]: Settings.exercises.spot,
+        telemetry: Settings.exercises.spot,
     };
 
     spots.forEach(s => s.element.addEventListener("click", game.check));

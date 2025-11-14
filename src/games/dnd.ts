@@ -1,35 +1,31 @@
-import { Game, GameContext } from "../core/game.ts";
+import { Game, GameOptions } from "../core/game.ts";
 import { Container } from "../core/container.ts";
 import * as genially from "../utils/genially.ts";
+import { ContextWith, GameWith } from "./types.ts";
 import * as common from "./common.ts";
-
-import { z } from "zod";
-
-/**
- * A zod schema used for validation.
- */
-const schema = z.object({
-    elems: z.array(z.custom<Container>((val) => val instanceof Container)),
-    boxes: z.array(z.custom<Container>((val) => val instanceof Container)),
-});
+import * as table from "./table.ts";
 
 /**
- * A type derived from the schema for the game and its data.
+ * A type for the game data.
  */
-type DndGame = Game & {
-    data: z.infer<typeof schema>;
-};
+export interface DndData {
+    elems: Container[];
+    boxes: Container[];
+}
+
+/**
+ * A type for the game.
+ */
+type DndGame = GameWith<DndData>;
+
 
 /**
  * Extended context with the current object and hitbox (if found).
  */
-export interface DndContext extends GameContext {
+export type DndContext = ContextWith<DndGame> & {
     obj: HTMLDivElement;
     box: HTMLDivElement | undefined;
-
-    // Patch the data type
-    game: DndGame;
-}
+};
 
 
 /**
@@ -48,10 +44,7 @@ export const isValidPick = (ctx: DndContext) => ctx.box?.dataset.index === ctx.o
 export const initContext = (ctx: DndContext) => {
             
     // Extract and validate the game data
-    const {
-        elems,
-        boxes,
-    } = schema.parse(ctx.game.data);
+    const { data } = ctx.game as DndGame;
 
     // Get the parent group from the event target
     const group = genially.getGroup(ctx.event.target as HTMLElement);
@@ -59,14 +52,14 @@ export const initContext = (ctx: DndContext) => {
         throw new Error("Object group not found");
 
     // Find the object that matches the group, failing if not found
-    const obj = elems
+    const obj = data.elems
         .find(o => genially.getGroup(o.element) === group);
     
     if (!obj)
         throw new Error("Object not found");
     
     // Check if the object is on top of any hitbox
-    const box = boxes
+    const box = data.boxes
         .find(b => isOnTop(obj.element, b.element));
     
     ctx.obj = obj.element;
@@ -104,20 +97,32 @@ export const handleWrong = (ctx: DndContext) => {
     }
 
     // Add a miss only if it was placed on the wrong hitbox
-    if (ctx.box) game.missCount++;
+    if (ctx.box) {
+        ctx.game.missCount++;
+        table.handleWrong({
+            ...ctx,
+            elem: ctx.box,
+        });
+    }
 };
 
 /**
- * A prebuilt dnd game.
+ * The game options for the dnd game.
  */
-export const game = new Game({
+export const options = {
     ...common.combined,
     initContext,
     isGameEnded,
     isValidPick,
     handleRight,
     handleWrong,
-}) as DndGame;
+} as GameOptions;
+
+
+/**
+ * A prebuilt dnd game.
+ */
+export const game = new Game(options) as DndGame;
 
 /**
  * Check if an object is on top of a hitbox.

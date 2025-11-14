@@ -1,6 +1,6 @@
 import { build } from "esbuild";
+import { copy, emptyDir } from "@std/fs";
 import { denoPlugins } from "@oazmi/esbuild-plugin-deno";
-import { copy, exists } from "@std/fs";
 
 const SRC_DIR = "./src/entrypoints";
 const OUT_DIR = "./dist";
@@ -15,59 +15,70 @@ const targets = [
     "guess",
 ];
 
-// Prepare the input and output paths
-const paths = targets.map(target => {
-    return {
-        src: `${SRC_DIR}/${target}.ts`,
-        out: `${OUT_DIR}/${target}.js`
-    }
-});
+async function main() {
+    await cleanup();
+    await checkTypes();
+    await buildTargets();
+    await copyPublicFiles();
 
-// Type check all source files
-console.log("Checking types...");
-const checkCommand = new Deno.Command("deno", {
-    args: ["check", SRC_DIR],
-    stdout: "inherit",
-    stderr: "inherit",
-});
-
-const checkProcess = checkCommand.spawn();
-const checkStatus = await checkProcess.status;
-
-if (!checkStatus.success) {
-    console.error("Type checking failed. Aborting build.");
-    Deno.exit(1);
+    console.log("Build finished successfully!");
 }
 
-// Clean up any previous build if possible
-if (await exists(OUT_DIR)) {
+async function cleanup() {
     console.log("Cleaning up previous build...");
-    await Deno.remove(OUT_DIR, { recursive: true });
+    await emptyDir(OUT_DIR);
 }
 
-// Build the files
-await Promise.all(
-    paths.map((path) => {
-        return build({
-            entryPoints: [path.src],
-            bundle: true,
-            minify: true,
-            outfile: path.out,
-            platform: "browser",
-            format: "iife",
-            plugins: [
-                // @ts-ignore: ignore weird type error
-                ...denoPlugins({
-                    initialPluginData: {
-                        runtimePackage: "./deno.json",
-                    }
-                }),
-            ],
-        });
-    })
-);
+async function checkTypes() {
+    console.log("Checking types...");
+    const entryPoints = targets.map(target => `${SRC_DIR}/${target}.ts`);
+    await runCommand("deno", ["check", ...entryPoints]);
+}
 
-// Copy public files
-await copy(PUBLIC_DIR, OUT_DIR, { overwrite: true });
+async function buildTargets() {
+    console.log("Building targets...");
 
-console.log("Build finished successfully!");
+    const entryPoints = targets.map(target => `${SRC_DIR}/${target}.ts`);
+    
+    await build({
+        entryPoints,
+        bundle: true,
+        minify: true,
+        outdir: OUT_DIR,
+        platform: "browser",
+        format: "iife",
+        plugins: [
+            // @ts-ignore: ignore weird type error
+            ...denoPlugins({
+                initialPluginData: {
+                    runtimePackage: "./deno.json",
+                }
+            }),
+        ],
+    });
+}
+
+async function copyPublicFiles() {
+    console.log("Copying public files...");
+    await copy(PUBLIC_DIR, OUT_DIR, { overwrite: true });
+}
+
+async function runCommand(cmd: string, args: string[]) {
+    const command = new Deno.Command(cmd, {
+        args,
+        stdout: "inherit",
+        stderr: "inherit",
+    });
+
+    const process = command.spawn();
+    const status = await process.status;
+
+    if (!status.success) {
+        console.error(`Command failed: ${cmd} ${args.join(" ")}`);
+        Deno.exit(1);
+    }
+}
+
+if (import.meta.main) {
+    main();
+}

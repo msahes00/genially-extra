@@ -13,8 +13,7 @@
     "npm:@supabase/postgrest-js@1.21.4": "1.21.4",
     "npm:@supabase/realtime-js@2.15.5": "2.15.5",
     "npm:@supabase/storage-js@2.12.2": "2.12.2",
-    "npm:esbuild@~0.25.11": "0.25.11",
-    "npm:zod@^4.1.12": "4.1.12"
+    "npm:esbuild@~0.25.11": "0.25.11"
   },
   "jsr": {
     "@oazmi/esbuild-plugin-deno@0.4.4": {
@@ -236,9 +235,6 @@
     },
     "ws@8.18.3": {
       "integrity": "sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg=="
-    },
-    "zod@4.1.12": {
-      "integrity": "sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ=="
     }
   },
   "workspace": {
@@ -246,8 +242,7 @@
       "jsr:@oazmi/esbuild-plugin-deno@~0.4.4",
       "jsr:@std/fs@^1.0.19",
       "jsr:@supabase/supabase-js@^2.58.0",
-      "npm:esbuild@~0.25.11",
-      "npm:zod@^4.1.12"
+      "npm:esbuild@~0.25.11"
     ]
   }
 }

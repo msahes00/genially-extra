@@ -1,8 +1,7 @@
-import { Game, GameContext } from "../core/game.ts";
+import { Game, GameContext, GameOptions } from "../core/game.ts";
 import { Container } from "../core/container.ts";
+import { ContextWith, GameHitmax, GameWith } from "./types.ts";
 import * as common from "./common.ts";
-
-import { z } from "zod";
 
 /**
  * A green tick svg.
@@ -37,41 +36,35 @@ const WRONG_SVG = `
 `;
 
 /**
- * A zod schema used for validation and type checking.
-*/
-const schema = z.object({
-    marked: z.number(),
-    hitMax: z.number(),
-    spots: z.array(z.custom<Container>((val) => val instanceof Container)),
-});
-
-/**
- * A type derived from the schema for the game and its data.
+ * A partial context type with the spot element.
  */
-type SpotGame = Game & {
-    data: z.infer<typeof schema>;
-};
-
-/**
- * Extended context with the current spot.
- */
-interface SpotContext extends GameContext {
+export type SpContext = GameContext & {
     spot: HTMLDivElement;
-    
-    // Patch the data type
-    game: SpotGame;
 }
+
+/**
+ * A type for the table game data.
+ */
+export type SpotGame = GameHitmax & GameWith<{
+    marked: number;
+    spots: Container[];
+}>;
+
+/**
+ * A combined type for the table context.
+ */
+export type SpotContext = ContextWith<SpotGame> & SpContext;
 
 
 /**
  * Checks if a spot is correct.
  */
-export const isValidPick = (ctx: SpotContext) => ctx.spot.dataset.correct === "true";
+export const isValidPick = (ctx: SpContext) => ctx.spot.dataset.correct === "true";
 
 /**
  * Checks when all the spots have been fully marked.
  */
-export const isGameEnded = (ctx: SpotContext) => ctx.game.data.marked >= ctx.game.data.hitMax;
+export const isGameEnded = (ctx: ContextWith<SpotGame>) => ctx.game.data.marked >= ctx.game.data.hitMax;
 
 /**
  * Validates game data and resolves the clicked spot.
@@ -79,14 +72,11 @@ export const isGameEnded = (ctx: SpotContext) => ctx.game.data.marked >= ctx.gam
 export const initContext = (ctx: SpotContext) => {
 
     // Extract and validate the game data
-    const {
-        spots,
-    } = schema.parse(ctx.game.data);
-
+    const { data } = ctx.game as SpotGame;
 
     // Get the target spot
     const tgt = ctx.event.target as HTMLElement;
-    const spot = spots.find(s => s.element.contains(tgt));
+    const spot = data.spots.find(s => s.element.contains(tgt));
 
     if (!spot)
         throw new Error("Invalid spot");
@@ -138,7 +128,7 @@ export const handleRight = (ctx: SpotContext) => {
 /**
  * Counts a wrong click and shows a cross.
  */
-export const handleWrong = (ctx: SpotContext) => {
+export const handleWrong = (ctx: SpContext) => {
 
     // Count only the first click
     if (markClicked(ctx.spot)) return;
@@ -149,16 +139,21 @@ export const handleWrong = (ctx: SpotContext) => {
 };
 
 /**
- * A prebuilt spot game.
+ * 
  */
-export const game = new Game({
+export const options = {
     ...common.combined,
     initContext,
     isGameEnded,
     isValidPick,
     handleRight,
     handleWrong,
-}) as SpotGame;
+} as GameOptions;
+
+/**
+ * A prebuilt spot game.
+ */
+export const game = new Game(options) as SpotGame;
 
 
 /**
@@ -180,4 +175,4 @@ const markClicked = (spot: HTMLDivElement) => {
  * @param spot The spot to check.
  * @returns True if the spot is clicked, false otherwise.
  */
-export const isClicked = (spot: HTMLDivElement) => spot.dataset.clicked === "true";
+const isClicked = (spot: HTMLDivElement) => spot.dataset.clicked === "true";

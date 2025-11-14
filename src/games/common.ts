@@ -1,14 +1,10 @@
 
 import * as telemetry from "../utils/telemetry.ts"
+import { GameTelemetry } from "./types.ts"
 import { Timer } from "../core/timer.ts";
 import { Container } from "../core/container.ts";
 import { Game, GameContext } from "../core/game.ts";
 import { Settings } from "../settings.ts";
-
-/**
- * The telemetry key for the game.data store.
- */
-export const ENDED_KEY = "telemetry";
 
 /**
  * Handle the end of the game by sending telemetry with the correct key
@@ -23,12 +19,9 @@ export const handleEnded = async (ctx: GameContext) => {
     // Delay the click for a bit, as genially may randomly ignore the click otherwise
     setTimeout(() => wrapper.element.click(), 100);
 
-    // Get the telemetry key
-    const type = ctx.game.data[ENDED_KEY] as string;
-    if (!type)
-        throw new Error("Telemetry type not found");
+    const game = ctx.game as GameTelemetry;
 
-    telemetry.send(ctx.game, type);
+    telemetry.send(game, game.data.telemetry);
 };
 
 /**
@@ -61,8 +54,7 @@ export const updateScore = async (game: Game) => {
         throw new Error("Score not found");
 
     const score = `
-        Aciertos: ${game.hitCount}
-        Errores: ${game.missCount}
+        Aciertos: ${game.hitCount}\n        Errores: ${game.missCount}
     `;
 
     container.element.style.fontSize = "1.25rem";

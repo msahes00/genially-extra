@@ -4,7 +4,6 @@ import * as genially from "../utils/genially.ts";
 import { Container } from "../core/container.ts";
 import { Settings } from "../settings.ts";
 import { game } from "../games/dnd.ts";
-import { ENDED_KEY } from "../games/common.ts";
 
 dom.init();
 main();
@@ -47,7 +46,7 @@ async function main() {
     game.data = {
         elems: oshuffled,
         boxes: bshuffled,
-        [ENDED_KEY]: Settings.exercises.dnd,
+        telemetry: Settings.exercises.dnd,
     };
 
     // Wire the objects to the game

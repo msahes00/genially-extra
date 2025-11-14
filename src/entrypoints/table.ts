@@ -6,7 +6,6 @@ import * as finder from "../core/finder.ts";
 import { Container } from "../core/container.ts";
 import { Settings } from "../settings.ts";
 import { game } from "../games/table.ts";
-import { ENDED_KEY } from "../games/common.ts";
 
 dom.init();
 main();
@@ -32,7 +31,7 @@ async function main() {
         table,
         hitMax,
         answer: numberMode? answer.num : answer.txt,
-        [ENDED_KEY]: Settings.exercises.table,
+        telemetry: Settings.exercises.table,
     };
 
     table.addEventListener("click", game.check);

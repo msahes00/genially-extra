@@ -4,7 +4,6 @@ import * as genially from "../utils/genially.ts";
 import { Container } from "../core/container.ts";
 import { Settings } from "../settings.ts";
 import { game } from "../games/spot.ts";
-import { ENDED_KEY } from "../games/common.ts";
 
 dom.init();
 main();
@@ -39,7 +38,7 @@ async function main() {
         hitMax: 1,
         marked: 0,
         spots: shuffled,
-        [ENDED_KEY]: Settings.exercises.findy,
+        telemetry: Settings.exercises.findy,
     };
     
     // Wire each findy to the game

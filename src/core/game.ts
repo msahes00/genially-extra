@@ -3,7 +3,7 @@ import { Timer } from "./timer.ts";
 /**
  * Defines the options available for configuring a game.
  */
-export interface GameOptions {
+export type GameOptions = {
     initContext? (ctx: GameContext): GameContext | Promise<GameContext>;
     isValidPick? (ctx: GameContext): boolean;
     isGameEnded? (ctx: GameContext): boolean;
@@ -19,7 +19,7 @@ export interface GameOptions {
 /**
  * The context structure to use for the check function.
  */
-export interface GameContext {
+export type GameContext = {
     game: Game;
     event: Event;
 }

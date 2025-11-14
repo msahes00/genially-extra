@@ -6,8 +6,7 @@
     "@oazmi/esbuild-plugin-deno": "jsr:@oazmi/esbuild-plugin-deno@^0.4.4",
     "@std/fs": "jsr:@std/fs@^1.0.19",
     "@supabase/supabase-js": "jsr:@supabase/supabase-js@^2.58.0",
-    "esbuild": "npm:esbuild@^0.25.11",
-    "zod": "npm:zod@^4.1.12"
+    "esbuild": "npm:esbuild@^0.25.11"
   },
   "compilerOptions": {
     "lib": [
